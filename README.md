@@ -6,7 +6,6 @@ The latest plugin and release notes are available from the [releases](//github.c
 
 ## Getting Started
 
-This Integration SDK requires:
-* Unreal Engine 4.22 or newer
+This Integration SDK requires Unreal Engine 4.22 or newer.
 
 All available documentation you can find in [Developer Center](//arvi-vr.github.io/developer-center/)
