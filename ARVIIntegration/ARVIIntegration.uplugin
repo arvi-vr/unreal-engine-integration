@@ -1,0 +1,32 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.1.0",
+	"FriendlyName": "ARVIIntegration",
+	"Description": "Plugin for integration with ARVI SDK",
+	"Category": "Other",
+	"CreatedBy": "ARVI",
+	"CreatedByURL": "https://vrp.arvilab.com",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"SupportedTargetPlatforms": [
+		"Win64"
+	],
+	"Modules": [
+		{
+			"Name": "ARVIIntegration",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "ARVIIntegrationEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
