@@ -12,3 +12,6 @@ This Integration SDK requires **Unreal Engine 4.22** or newer.
 2. In your project's root directory, create a new folder if it doesn't exist: **Plugins**.
 3. Unzip the downloaded file directly to the **Plugins** folder. There should now be a folder called unreal-integration-master; you can rename this if you'd like.
 4. Finally, double-click the *.uproject file at the root of your project to compile and open the project. If you are prompted to rebuild any files select yes.
+
+## Have aye questions?
+If you still have any questions join our [Discord](https://discord.gg/DQHrdaS9pc).
