@@ -14,4 +14,4 @@ This Integration SDK requires **Unreal Engine 4.22** or newer.
 4. Finally, double-click the *.uproject file at the root of your project to compile and open the project. If you are prompted to rebuild any files select yes.
 
 ## Have aye questions?
-If you still have any questions join our [Discord](https://discord.gg/DQHrdaS9pc).
+If you still have any questions contact our [Support](mailto:vr.support@arvilab.com)
