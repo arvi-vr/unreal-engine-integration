@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2018-2022 ARVI VR Inc.
 
 
 #include "ARVIIntegrationLibrary.h"
@@ -6,7 +6,7 @@
 FString UARVIIntegrationLibrary::ConvertPlatformMessageDataToString(const TArray<uint8>& Data)
 {
     FUTF8ToTCHAR convert((const ANSICHAR*)Data.GetData(), Data.Num());
-    return FString(convert.Get());
+    return FString(convert.Length(), convert.Get());
 }
 
 TArray<uint8> UARVIIntegrationLibrary::ConvertPlatformMessageDataFromString(const FString& Message)

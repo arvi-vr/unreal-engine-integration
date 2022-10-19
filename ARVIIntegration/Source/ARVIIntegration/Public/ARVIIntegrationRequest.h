@@ -1,14 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2018-2022 ARVI VR Inc.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "AudioChatTypes.h"
+#include "PlayerDominantHandTypes.h"
 #include "TimerManager.h"
 #include "ARVIIntegrationRequest.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnIntegrationRequestEvent, int, ErrorCode, FString, ErrorMessage);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnIntegrationRequestWithDataEvent, TArray<uint8>, Data, int, ErrorCode, FString, ErrorMessage);
 /**
  * 
  */
@@ -27,6 +29,29 @@ protected:
 	UObject* WorldContext;
 
 	void HandleCompleted();
+	void HandleFailed(int Code, FString Message);
+
+	virtual bool ExecuteInternal(class UARVIIntegrationSubSystem* Integration);
+public:
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "ARVI Integration")
+	void Execute();
+};
+
+UCLASS()
+class ARVIINTEGRATION_API UARVIIntegrationRequestWithData : public UObject
+{
+	GENERATED_BODY()
+protected:
+	UPROPERTY(BlueprintAssignable)
+	FOnIntegrationRequestWithDataEvent OnCompleted;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnIntegrationRequestWithDataEvent OnFailed;
+
+	UPROPERTY()
+	UObject* WorldContext;
+
+	void HandleCompleted(const TArray<uint8>& Data);
 	void HandleFailed(int Code, FString Message);
 
 	virtual bool ExecuteInternal(class UARVIIntegrationSubSystem* Integration);
@@ -228,4 +253,62 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject", DisplayName = "DeactivateInGameCommand"), Category = "ARVI Integration")
 	static UARVIIntegrationRequest* DeactivateInGameCommand(UObject* WorldContextObject, const FString& DeactivationMessage);
+};
+
+UCLASS()
+class ARVIINTEGRATION_API UARVIIntegrationRequest_SetSessionData : public UARVIIntegrationRequest
+{
+	GENERATED_BODY()
+protected:
+	FString Name;
+	TArray<uint8> Data;
+
+	virtual bool ExecuteInternal(class UARVIIntegrationSubSystem* Integration) override;
+public:
+	/**
+	* Sets session-related data by name
+	* @note	Limitations: Data size should not exceed 10Mb
+	* @param Name		Data name
+	* @param Data		Binary data to save
+	* @return
+	*/
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject", DisplayName = "SetSessionData"), Category = "ARVI Integration")
+	static UARVIIntegrationRequest* SetSessionData(UObject* WorldContextObject, const FString& Name, const TArray<uint8>& Data);
+};
+
+UCLASS()
+class ARVIINTEGRATION_API UARVIIntegrationRequest_SetPlayerName : public UARVIIntegrationRequest
+{
+	GENERATED_BODY()
+protected:
+	FString PlayerName;
+
+	virtual bool ExecuteInternal(class UARVIIntegrationSubSystem* Integration) override;
+public:
+	/**
+	* Sets the new player name
+	* @note	Limitations: Name length should not exceed 15
+	* @param NewPlayerName			New player's name
+	* @return
+	*/
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject", DisplayName = "SetPlayerName"), Category = "ARVI Integration")
+	static UARVIIntegrationRequest* SetPlayerName(UObject* WorldContextObject, const FString& NewPlayerName);
+};
+
+UCLASS()
+class ARVIINTEGRATION_API UARVIIntegrationRequest_SetPlayerDominantHand : public UARVIIntegrationRequest
+{
+	GENERATED_BODY()
+protected:
+	EPlayerDominantHand PlayerDominantHand;
+
+	virtual bool ExecuteInternal(class UARVIIntegrationSubSystem* Integration) override;
+public:
+	/**
+	* Sets the new player dominant hand
+	* @param NewPlayerDominantHand		New value for the player's dominant hand
+	* @return
+	*/
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject", DisplayName = "SetPlayerDominant"), Category = "ARVI Integration")
+	static UARVIIntegrationRequest* SetPlayerDominantHand(UObject* WorldContextObject, EPlayerDominantHand NewPlayerDominantHand);
 };

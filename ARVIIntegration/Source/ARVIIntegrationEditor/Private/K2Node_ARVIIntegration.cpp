@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2018-2022 ARVI VR Inc.
 
 
 #include "K2Node_ARVIIntegration.h"
@@ -24,5 +24,8 @@ ARVIINTERAGTION_IMPLEMENTATION(SendTrackingMessage)
 
 ARVIINTERAGTION_IMPLEMENTATION(ActivateInGameCommand)
 ARVIINTERAGTION_IMPLEMENTATION(DeactivateInGameCommand)
+ARVIINTERAGTION_IMPLEMENTATION(SetSessionData)
+ARVIINTERAGTION_IMPLEMENTATION(SetPlayerName)
+ARVIINTERAGTION_IMPLEMENTATION(SetPlayerDominantHand)
 
 #undef ARVIINTERAGTION_IMPLEMENTATION

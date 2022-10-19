@@ -1,31 +1,47 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2018-2022 ARVI VR Inc.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "AudioChatTypes.h"
+#include "PlayerDominantHandTypes.h"
 #include "ARVIPlatformMessage.h"
 #include "ARVIIntegrationSubSystem.generated.h"
 
-DECLARE_DELEGATE(FOnARVIIntegrationRequesCompleted);
-DECLARE_DELEGATE_TwoParams(FOnARVIIntegrationRequesFailed, int, FString);
+DECLARE_DELEGATE(FOnARVIIntegrationRequestCompleted);
+DECLARE_DELEGATE_TwoParams(FOnARVIIntegrationRequestFailed, int, FString);
+DECLARE_DELEGATE_OneParam(FOnARVIIntegrationRequestCompletedWithData, const TArray<uint8>& );
+DECLARE_DYNAMIC_DELEGATE(FTEST_T);
 
+[[deprecated("Use FOnARVIIntegrationRequestFailed instead.")]]
+typedef FOnARVIIntegrationRequestFailed FOnARVIIntegrationRequesFailed;
+
+[[deprecated("Use FOnARVIIntegrationRequestCompleted instead.")]]
+typedef FOnARVIIntegrationRequestCompleted FOnARVIIntegrationRequesCompleted;
+                          
 DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(bool, FPlayerPositionRequestDelegate, FTransform&, PlayerTransform);
 DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(bool, FTimeLefRequestDelegate, int&, TimeLeft);
 DECLARE_DYNAMIC_DELEGATE_RetVal_ThreeParams(bool, FPlatformMessageRequestDelegate, const FARVIPlatformMessage&, Message, FString&, ContentType, TArray<uint8>&, Data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerNameChangeNotificationDelegate, const FString&, NewPlayerName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerDominantHandChangeNotificationDelegate, EPlayerDominantHand, NewDominantHand);
 
 USTRUCT()
 struct ARVIINTEGRATION_API FRequestCallback {
 	GENERATED_BODY()
-	FOnARVIIntegrationRequesCompleted OnCompleted;
-	FOnARVIIntegrationRequesFailed OnFailed;
+	FOnARVIIntegrationRequestCompleted OnCompleted;
+	FOnARVIIntegrationRequestFailed OnFailed;
+	FOnARVIIntegrationRequestCompletedWithData OnCompletedWithData;
 
-	FRequestCallback() : OnCompleted(nullptr), OnFailed(nullptr) {
+	FRequestCallback() : OnCompleted(nullptr), OnFailed(nullptr), OnCompletedWithData(nullptr) {
 	
 	}
 
-	FRequestCallback(FOnARVIIntegrationRequesCompleted onCompleted, FOnARVIIntegrationRequesFailed onFailed) : OnCompleted(onCompleted), OnFailed(onFailed) {
+	FRequestCallback(FOnARVIIntegrationRequestCompleted onCompleted, FOnARVIIntegrationRequestFailed onFailed) : OnCompleted(onCompleted), OnFailed(onFailed), OnCompletedWithData(nullptr) {
+
+	}
+
+	FRequestCallback(FOnARVIIntegrationRequestCompletedWithData onCompletedWithData, FOnARVIIntegrationRequestFailed onFailed) : OnCompleted(nullptr), OnFailed(onFailed), OnCompletedWithData(onCompletedWithData) {
 
 	}
 };
@@ -48,13 +64,25 @@ public:
 	* Remaining game time request handler
 	*/
 	UPROPERTY(BlueprintReadWrite, Category = "ARVI Integration")
-	FTimeLefRequestDelegate TimeLefRequestHandler;
+	FTimeLefRequestDelegate TimeLeftRequestHandler;
 
 	/**
 	* Arbitrary request handler	
 	*/
 	UPROPERTY(BlueprintReadWrite, Category = "ARVI Integration")
 	FPlatformMessageRequestDelegate PlatformMessageRequestHandler;
+
+	/**
+	* Player name change handler
+	*/
+	UPROPERTY(BlueprintReadWrite, Category = "ARVI Integration")
+	FPlayerNameChangeNotificationDelegate PlayerNameChangedHandler;
+
+	/**
+	* Player dominant hand change handler
+	*/
+	UPROPERTY(BlueprintReadWrite, Category = "ARVI Integration")
+	FPlayerDominantHandChangeNotificationDelegate PlayerDominantHandChangedHandler;
 protected:
 	/**
 	* Indicates if the module Messages has been initialized
@@ -63,16 +91,67 @@ protected:
 	bool bMessagesWasInitialize;
 
 	/**
-	* Gets if the game should track headset cord twisting
+	* Indicates if the module SessionVariables has been initialized
 	*/
 	UPROPERTY(BlueprintReadOnly, Category = "ARVI Integration")
+	bool bSessionVariablesWasInitialize;
+
+	/**
+	* Gets if the game should track headset cord twisting
+	*/
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetShouldApplicationTrackCordTwisting, Category = "ARVI Integration")
 	bool bShouldApplicationTrackCordTwisting;
 
 	/**
 	* Gets if the application is running in trial mode
 	*/
-	UPROPERTY(BlueprintReadOnly, Category = "ARVI Integration")
+	UPROPERTY(BlueprintReadOnly,BlueprintGetter=GetIsApplicationInTrialMode, Category = "ARVI Integration")
 	bool bIsApplicationInTrialMode;
+
+	/**
+	* Number of players in the session
+	*/
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetPlayersCount, Category = "ARVI Integration")
+	int PlayersCount;
+
+	/**
+	* Game server IP address
+	*/
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetServerIP, Category = "ARVI Integration")
+	FString ServerIP;
+
+	/**
+	* Game session language
+	*/
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetSessionLanguage, Category = "ARVI Integration")
+	FString SessionLanguage;
+
+	/**
+	* Game session time in seconds
+	*/
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetSessionTime, Category = "ARVI Integration")
+	int SessionTime;
+
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetSessionID, Category = "ARVI Integration")
+	FString SessionID;
+
+	/**
+	* Player's ID
+	*/
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetPlayerID, Category = "ARVI Integration")
+	FString PlayerID;
+
+	/**
+	* Player's name
+	*/
+	UPROPERTY(BlueprintReadWrite, BlueprintGetter = GetPlayerName, Category = "ARVI Integration")
+	FString PlayerName;
+
+	/**
+	* Player's dominant hand
+	*/
+	UPROPERTY(BlueprintReadWrite, BlueprintGetter=GetPlayerDominantHand, Category = "ARVI Integration")
+	EPlayerDominantHand PlayerDominantHand;
 
 	UPROPERTY()
 	TMap<int64, FRequestCallback> Requests;
@@ -98,6 +177,12 @@ protected:
 	bool DispatchPlayerPositionRequest(const FARVIPlatformMessage& Message, FString& ContentType, TArray<uint8>& Data);
 	bool DispatchTimeLeftRequest(const FARVIPlatformMessage& Message, FString& ContentType, TArray<uint8>& Data);
 	bool DispatchPlatformMessage(const FARVIPlatformMessage& Message, FString& ContentType, TArray<uint8>& Data);
+
+	void DispatchEventPlayerNameChanged();
+	void DispatchEventPlayerDominantHandChanged();
+
+	void UpdateCachePlayerName();
+	void UpdateCachePlayerDominantHand();
 public:	
 	UARVIIntegrationSubSystem();
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -112,19 +197,11 @@ public:
 	}
 
 	/**
-	* Gets if the game should track headset cord twisting
+	* Indicates if the module SessionVariables has been initialized
 	* @return
 	*/
-	bool GetShouldApplicationTrackCordTwisting() const {
-		return bShouldApplicationTrackCordTwisting;
-	}
-
-	/**
-	* Gets if the application is running in trial mode
-	* @return
-	*/
-	bool GetIsApplicationInTrialMode() const {
-		return bIsApplicationInTrialMode;
+	bool GetSessionVariablesWasInitialize() const {
+		return bSessionVariablesWasInitialize;
 	}
 
 	/**
@@ -142,13 +219,20 @@ public:
 	FString GetMessagesError() const;
 
 	/**
+	 * Will return a SessionVariablesSystem initialization error
+	 * @return	string error
+	 */
+	UFUNCTION(BlueprintCallable, Category = "ARVI Integration")
+	FString GetSessionVariablesError() const;
+
+	/**
 	 * Checks application entitlement
 	 * @param appKey		Application Key, provided with API
 	 * @param OnCompleted	The handler that is called when an asynchronous operation completes successfully.
 	 * @param OnFailed		The handler that is called when an asynchronous operation fails
 	 * @return				True if the asynchronous operation has started and one of the handlers will be called later
 	 */
-	bool IsApplicationEntitled(FString AppKey, FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool IsApplicationEntitled(FString AppKey, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Checks application entitlement (Deprecated)
@@ -156,7 +240,7 @@ public:
 	* @param OnFailed		The handler that is called when an asynchronous operation fails
 	* @return				True if the asynchronous operation has started and one of the handlers will be called later
 	*/
-	bool IsApplicationEntitledOld(FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool IsApplicationEntitledOld(FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 	
 	/**
 	* Notifies platform about starting game server
@@ -164,7 +248,7 @@ public:
 	* @param OnFailed		The handler that is called when an asynchronous operation fails
 	* @return				True if the asynchronous operation has started and one of the handlers will be called later
 	*/
-	bool ServerStarted(FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool ServerStarted(FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Notifies platform about completing the game
@@ -172,7 +256,7 @@ public:
 	* @param OnFailed		The handler that is called when an asynchronous operation fails
 	* @return				True if the asynchronous operation has started and one of the handlers will be called later
 	*/
-	bool GameCompleted(FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool GameCompleted(FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Notifies platform about operator calling
@@ -180,7 +264,7 @@ public:
 	* @param OnFailed		The handler that is called when an asynchronous operation fails
 	* @return				True if the asynchronous operation has started and one of the handlers will be called later
 	*/
-	bool CallOperator(FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool CallOperator(FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Sets an audio chat channel
@@ -189,7 +273,7 @@ public:
 	* @param OnFailed		The handler that is called when an asynchronous operation fails
 	* @return				True if the asynchronous operation has started and one of the handlers will be called later
 	*/
-	bool SetAudioChatChannel(EAudioChatChannel ChatChannel, FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool SetAudioChatChannel(EAudioChatChannel ChatChannel, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Sends text message to platform
@@ -200,7 +284,7 @@ public:
 	* @return				True if the asynchronous operation has started and one of the handlers will be called later
 	* @note					Limitations: no more than 10 times per second and 100 times per minute. Message length should not exceed 2Kb
 	*/
-	bool SendGameMessage(const FString& Message, const FName& Group = NAME_None, FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool SendGameMessage(const FString& Message, const FName& Group = NAME_None, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Sends service/debug message which will be logged on platform
@@ -210,7 +294,7 @@ public:
 	* @return				True if the asynchronous operation has started and one of the handlers will be called later
 	* @note					Limitations: no more than 10 times per second and 100 times per minute. Message length should not exceed 10Kb
 	*/
-	bool SendLogMessage(const FString& Message, FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool SendLogMessage(const FString& Message, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Sends warning message which will be shown in administrative panel
@@ -220,7 +304,7 @@ public:
 	* @return				True if the asynchronous operation has started and one of the handlers will be called later
 	* @note					Limitations: no more than 1 time per second and 10 times per minute. Message length should not exceed 2Kb
 	*/
-	bool SendWarningMessage(const FString& Message, FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool SendWarningMessage(const FString& Message, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Sends tracking message which will be tracked on log timelin
@@ -230,7 +314,7 @@ public:
 	* @return				True if the asynchronous operation has started and one of the handlers will be called later
 	* @note					Limitations: no more than 10 time per second and 100 times per minute. Message length should not exceed 1Kb
 	*/
-	bool SendTrackingMessage(const FString& Message, FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool SendTrackingMessage(const FString& Message, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Activates in-game command. If several commands have the same activation message, then they will all be activated
@@ -240,7 +324,7 @@ public:
 	* @return						True if the asynchronous operation has started and one of the handlers will be called later
 	* @note							Limitations: no more than 10 time per second and 100 times per minute. Message length should not exceed 128
 	*/
-	bool ActivateInGameCommand(const FString& ActivationMessage, FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool ActivateInGameCommand(const FString& ActivationMessage, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
 	* Deactivates in-game command. If several commands have the same deactivation message, then they will all be deactivated
@@ -250,5 +334,133 @@ public:
 	* @return						True if the asynchronous operation has started and one of the handlers will be called later
 	* @note							Limitations: no more than 10 time per second and 100 times per minute. Message length should not exceed 128
 	*/
-	bool DeactivateInGameCommand(const FString& DeactivationMessage, FOnARVIIntegrationRequesCompleted OnCompleted = nullptr, FOnARVIIntegrationRequesFailed OnFailed = nullptr);
+	bool DeactivateInGameCommand(const FString& DeactivationMessage, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
+
+	/**
+	* Sets session-related data by name
+	* @param Name					Data name
+	* @param Data					Binary data to save
+	* @param OnCompleted			The handler that is called when an asynchronous operation completes successfully.
+	* @param OnFailed				The handler that is called when an asynchronous operation fails
+	* @return						True if the asynchronous operation has started and one of the handlers will be called later
+	* @note							Limitations: Data size should not exceed 10Mb
+	*/
+	bool SetSessionData(const FString& Name, const TArray<uint8>& Data, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
+
+	/**
+	* Gets session-related data by name
+	* @param Name					Data name
+	* @param Data					Returned binary data
+	* @return						True if the asynchronous operation has started and one of the handlers will be called later
+	*/
+	bool TryGetSessionData(const FString& Name, TArray<uint8>& Data);
+
+	/**
+	* Gets the number of players in the session
+	* @return	Number of players in the session
+	*/
+	UFUNCTION(BlueprintGetter)
+	int GetPlayersCount() const {
+		return PlayersCount;
+	};
+
+	/** 
+	* Gets game server IP address
+	* @return	Game server IP address
+	*/
+	UFUNCTION(BlueprintGetter)
+	const FString& GetServerIP() const {
+		return ServerIP;
+	};
+
+	/**
+	* Gets game session language
+	* @return	Game session language
+	*/
+	UFUNCTION(BlueprintGetter)
+	const FString& GetSessionLanguage() const {
+		return SessionLanguage;
+	}
+
+	/**
+	* Gets game session time in seconds
+	* @return	Game session time in seconds
+	*/
+	UFUNCTION(BlueprintGetter)
+	int GetSessionTime() const {
+		return SessionTime;
+	}
+
+	/**
+	 * Gets a unique game session identifier
+	 * @return	Unique game session identifier
+	 */
+	UFUNCTION(BlueprintGetter)
+	const FString& GetSessionID() const {
+		return SessionID;
+	}
+
+	/**
+	* Gets player's ID
+	* @return	Player's ID
+	*/
+	UFUNCTION(BlueprintGetter)
+	const FString& GetPlayerID() const {
+		return PlayerID;
+	}
+
+	/**
+	* Gets the name of the player
+	* @return Player's name
+	*/
+	UFUNCTION(BlueprintGetter)
+	const FString& GetPlayerName() const {
+		return PlayerName;
+	}
+
+	/**
+	* Gets the dominant hand of the player
+	* @return Player's dominant hand
+	*/
+	UFUNCTION(BlueprintGetter)
+	EPlayerDominantHand GetPlayerDominantHand() const {
+		return PlayerDominantHand;
+	}
+
+	/**
+	* Gets if the game should track headset cord twisting
+	* @return Return true if the game should track headset cord twisting, false otherwise
+	*/
+	UFUNCTION(BlueprintGetter)
+	bool GetShouldApplicationTrackCordTwisting() const {
+		return bShouldApplicationTrackCordTwisting;
+	}
+
+	/**
+	* Gets if the application is running in trial mode
+	* @return Return true if the application is in trial mode, false otherwise
+	*/
+	UFUNCTION(BlueprintGetter)
+	bool GetIsApplicationInTrialMode() const {
+		return bIsApplicationInTrialMode;
+	}
+
+	/**
+	* Sets the new player name
+	* @param NewPlayerName			New player's name
+	* @param OnCompleted			The handler that is called when an asynchronous operation completes successfully.
+	* @param OnFailed				The handler that is called when an asynchronous operation fails
+	* @return						True if the asynchronous operation has started and one of the handlers will be called later
+	* @note							Limitations: Name length should not exceed 15
+	*/
+	bool SetPlayerName(const FString& NewPlayerName, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
+
+	/**
+	* Sets the new player dominant hand
+	* @param NewPlayerDominantHand		New value for the player's dominant hand
+	* @param OnCompleted				The handler that is called when an asynchronous operation completes successfully.
+	* @param OnFailed					The handler that is called when an asynchronous operation fails
+	* @return							True if the asynchronous operation has started and one of the handlers will be called later
+	*/
+	bool SetPlayerDominantHand(EPlayerDominantHand NewPlayerDominantHand, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 };

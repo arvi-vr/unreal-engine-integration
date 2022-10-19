@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2018-2022 ARVI VR Inc.
 
 #pragma once
 
@@ -96,4 +96,28 @@ class ARVIINTEGRATIONEDITOR_API UK2Node_DeactivateInGameCommand : public UK2Node
 	GENERATED_BODY()
 public:
 	UK2Node_DeactivateInGameCommand(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+};
+
+UCLASS()
+class ARVIINTEGRATIONEDITOR_API UK2Node_SetSessionData : public UK2Node_BaseAsyncTask
+{
+	GENERATED_BODY()
+public:
+	UK2Node_SetSessionData(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+};
+
+UCLASS()
+class ARVIINTEGRATIONEDITOR_API UK2Node_SetPlayerName : public UK2Node_BaseAsyncTask
+{
+	GENERATED_BODY()
+public:
+	UK2Node_SetPlayerName(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+};
+
+UCLASS()
+class ARVIINTEGRATIONEDITOR_API UK2Node_SetPlayerDominantHand : public UK2Node_BaseAsyncTask
+{
+	GENERATED_BODY()
+public:
+	UK2Node_SetPlayerDominantHand(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 };

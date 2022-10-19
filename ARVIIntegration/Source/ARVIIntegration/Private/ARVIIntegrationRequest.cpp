@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2018-2022 ARVI VR Inc.
 
 
 #include "ARVIIntegrationRequest.h"
@@ -48,7 +48,7 @@ void UARVIIntegrationRequest::Execute()
 
 bool UARVIIntegrationRequest_IsApplicationEntitled::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->IsApplicationEntitled(AppKey, FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->IsApplicationEntitled(AppKey, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_IsApplicationEntitled::IsApplicationEntitled(UObject* WorldContextObject, FString appKey)
@@ -63,7 +63,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_IsApplicationEntitled::IsApplic
 
 bool UARVIIntegrationRequest_ServerStarted::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->ServerStarted(FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->ServerStarted(FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_ServerStarted::ServerStarted(UObject* WorldContextObject)
@@ -77,7 +77,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_ServerStarted::ServerStarted(UO
 
 bool UARVIIntegrationRequest_GameCompleted::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->GameCompleted(FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->GameCompleted(FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_GameCompleted::GameCompleted(UObject* WorldContextObject)
@@ -91,7 +91,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_GameCompleted::GameCompleted(UO
 
 bool UARVIIntegrationRequest_CallOperator::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->CallOperator(FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->CallOperator(FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_CallOperator::CallOperator(UObject* WorldContextObject)
@@ -105,7 +105,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_CallOperator::CallOperator(UObj
 
 bool UARVIIntegrationRequest_SetAudioChatChannel::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->SetAudioChatChannel(ChatChannel, FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->SetAudioChatChannel(ChatChannel, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_SetAudioChatChannel::SetAudioChatChannel(UObject* WorldContextObject, EAudioChatChannel chatChannel)
@@ -120,7 +120,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_SetAudioChatChannel::SetAudioCh
 
 bool UARVIIntegrationRequest_SendGameMessage::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->SendGameMessage(Message, Group, FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->SendGameMessage(Message, Group, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_SendGameMessage::SendGameMessage(UObject* WorldContextObject, const FString& message, FName group)
@@ -136,7 +136,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_SendGameMessage::SendGameMessag
 
 bool UARVIIntegrationRequest_SendLogMessage::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->SendLogMessage(Message, FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->SendLogMessage(Message, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_SendLogMessage::SendLogMessage(UObject* WorldContextObject, const FString& message)
@@ -151,7 +151,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_SendLogMessage::SendLogMessage(
 
 bool UARVIIntegrationRequest_SendWarningMessage::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->SendWarningMessage(Message, FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->SendWarningMessage(Message, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_SendWarningMessage::SendWarningMessage(UObject* WorldContextObject, const FString& message)
@@ -166,7 +166,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_SendWarningMessage::SendWarning
 
 bool UARVIIntegrationRequest_SendTrackingMessage::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->SendTrackingMessage(Message, FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->SendTrackingMessage(Message, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_SendTrackingMessage::SendTrackingMessage(UObject* WorldContextObject,const FString& message)
@@ -181,7 +181,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_SendTrackingMessage::SendTracki
 
 bool UARVIIntegrationRequest_ActivateInGameCommand::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->ActivateInGameCommand(Message, FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->ActivateInGameCommand(Message, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_ActivateInGameCommand::ActivateInGameCommand(UObject* WorldContextObject, const FString& ActivationMessage)
@@ -196,7 +196,7 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_ActivateInGameCommand::Activate
 
 bool UARVIIntegrationRequest_DeactivateInGameCommand::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
 {
-	return Integration->DeactivateInGameCommand(Message, FOnARVIIntegrationRequesCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequesFailed::CreateUObject(this, &ThisClass::HandleFailed));
+	return Integration->DeactivateInGameCommand(Message, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
 }
 
 UARVIIntegrationRequest* UARVIIntegrationRequest_DeactivateInGameCommand::DeactivateInGameCommand(UObject* WorldContextObject, const FString& DeactivationMessage)
@@ -205,6 +205,91 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_DeactivateInGameCommand::Deacti
 	if (Request) {
 		Request->WorldContext = WorldContextObject;
 		Request->Message = DeactivationMessage;
+	}
+	return Request;
+}
+
+bool UARVIIntegrationRequest_SetSessionData::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
+{
+	return Integration->SetSessionData(Name, Data, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
+}
+
+UARVIIntegrationRequest* UARVIIntegrationRequest_SetSessionData::SetSessionData(UObject* WorldContextObject, const FString& Name, const TArray<uint8>& Data)
+{
+	ThisClass* Request = NewObject<ThisClass>();
+	if (Request) {
+		Request->WorldContext = WorldContextObject;
+		Request->Name = Name;
+		Request->Data = Data;
+	}
+	return Request;
+}
+
+void UARVIIntegrationRequestWithData::HandleCompleted(const TArray<uint8>& Data)
+{
+	OnCompleted.Broadcast(Data, 0, FString());
+}
+
+void UARVIIntegrationRequestWithData::HandleFailed(int Code, FString Message)
+{
+	OnFailed.Broadcast(TArray<uint8>(), Code, Message);
+}
+
+bool UARVIIntegrationRequestWithData::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
+{
+	return false;
+}
+
+void UARVIIntegrationRequestWithData::Execute()
+{
+	if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull)) {
+		if (UGameInstance* GameInstance = World->GetGameInstance()) {
+			if (UARVIIntegrationSubSystem* Integration = GameInstance->GetSubsystem<UARVIIntegrationSubSystem>()) {
+				if (!ExecuteInternal(Integration))
+					HandleFailed(-1, "Can not create request");
+			}
+			else {
+				UE_LOG(LogARVIIntegration, Warning, TEXT("Can not access to ARVIIntegrationSubSystem"));
+				HandleFailed(-1, "Can not create request");
+			}
+		}
+		else {
+			UE_LOG(LogARVIIntegration, Warning, TEXT("Can not access to GameInstance"));
+			HandleFailed(-1, "Can not create request");
+		}
+	}
+	else {
+		UE_LOG(LogARVIIntegration, Warning, TEXT("Can not access to World"));
+		HandleFailed(-1, "Can not create request");
+	}
+}
+
+bool UARVIIntegrationRequest_SetPlayerName::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
+{
+	return Integration->SetPlayerName(PlayerName, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
+}
+
+UARVIIntegrationRequest* UARVIIntegrationRequest_SetPlayerName::SetPlayerName(UObject* WorldContextObject, const FString& NewPlayerName)
+{
+	ThisClass* Request = NewObject<ThisClass>();
+	if (Request) {
+		Request->WorldContext = WorldContextObject;
+		Request->PlayerName = NewPlayerName;
+	}
+	return Request;
+}
+
+bool UARVIIntegrationRequest_SetPlayerDominantHand::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
+{
+	return Integration->SetPlayerDominantHand(PlayerDominantHand, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
+}
+
+UARVIIntegrationRequest* UARVIIntegrationRequest_SetPlayerDominantHand::SetPlayerDominantHand(UObject* WorldContextObject, EPlayerDominantHand NewPlayerDominantHand)
+{
+	ThisClass* Request = NewObject<ThisClass>();
+	if (Request) {
+		Request->WorldContext = WorldContextObject;
+		Request->PlayerDominantHand = NewPlayerDominantHand;
 	}
 	return Request;
 }

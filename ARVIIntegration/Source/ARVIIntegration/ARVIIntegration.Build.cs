@@ -13,11 +13,23 @@ public class ARVIIntegration : ModuleRules
 		PrivateDefinitions.Add("LIBARVI_STATIC");
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		if (Target.Platform == UnrealTargetPlatform.Win32 || Target.Platform == UnrealTargetPlatform.Win64)
+		if (Target.Platform == UnrealTargetPlatform.Win64)
 		{
 			string LibDir = Path.Combine(ModuleDirectory, "lib");
 			LibDir = Path.Combine(LibDir, Target.Platform.ToString());
-			LibDir = Path.Combine(LibDir, "VS" + Target.WindowsPlatform.GetVisualStudioCompilerVersionName());
+			switch (Target.WindowsPlatform.Compiler) {
+				case WindowsCompiler.VisualStudio2017:
+					LibDir = Path.Combine(LibDir, "VS2017");
+					break;
+				case WindowsCompiler.VisualStudio2019:
+					LibDir = Path.Combine(LibDir, "VS2019");
+					break;
+				case WindowsCompiler.VisualStudio2022:
+					LibDir = Path.Combine(LibDir, "VS2022");
+					break;
+				default:
+					throw new Exception("Unsupported compiler version " + Target.WindowsPlatform.Compiler);
+			}
 			PublicAdditionalLibraries.Add(Path.Combine(LibDir, "libARVI_s.lib"));
 #if UE_4_24_OR_LATER
 			PublicSystemLibraries.Add("crypt32.lib");
@@ -27,8 +39,7 @@ public class ARVIIntegration : ModuleRules
 			PublicAdditionalLibraries.Add("winhttp.lib");
 #endif
 		}
-
-		PublicIncludePaths.AddRange(
+                PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
 			}
@@ -56,8 +67,6 @@ public class ARVIIntegration : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"Slate",
-				"SlateCore",
 				"Json", 
 				"JsonUtilities",
 				// ... add private dependencies that you statically link with here ...	

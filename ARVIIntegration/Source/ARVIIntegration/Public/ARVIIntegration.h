@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright © 2018-2022 ARVI VR Inc.
 
 #pragma once
 
