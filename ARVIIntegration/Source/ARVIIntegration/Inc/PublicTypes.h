@@ -1,4 +1,4 @@
-// Copyright © 2018-2022 ARVI VR Inc.
+// Copyright Â© 2018-2022 ARVI VR Inc.
 #pragma once
 
 typedef size_t REQUEST_ID;

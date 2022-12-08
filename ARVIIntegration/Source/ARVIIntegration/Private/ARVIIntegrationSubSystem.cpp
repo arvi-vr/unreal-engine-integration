@@ -1,4 +1,4 @@
-// Copyright © 2018-2022 ARVI VR Inc.
+// Copyright Â© 2018-2022 ARVI VR Inc.
 
 
 #include "ARVIIntegrationSubSystem.h"
@@ -76,11 +76,12 @@ static bool TryGetStringData(const Func TryGetFunc, FString& Value) {
 	int size;
 	TryGetFunc(nullptr, &size);
 	Buff.SetNum(size);
+	size = Buff.Num();
 	if (!TryGetFunc(Buff.GetData(), &size))
 		return false;
 	Buff.SetNum(size); 
-	FWCharToTCHAR Converer(Buff.GetData(), Buff.Num());
-	Value = FString(Converer.Length(), Converer.Get());
+	FWCharToTCHAR Converter(Buff.GetData(), Buff.Num());
+	Value = FString(Converter.Length(), Converter.Get());
 	return true;
 }
 
@@ -562,11 +563,31 @@ bool UARVIIntegrationSubSystem::TryGetSessionData(const FString& Name, TArray<ui
 	if (!res && (size == 0))
 		return false;
 	Data.SetNum(size);
+	size = Data.Num();
 	res = !!::TryGetSessionData(TCHAR_TO_WCHAR(*Name), (char*)Data.GetData(), &size);
 	if (res)
 		Data.SetNum(size);
 	else
 		Data.SetNum(0);	
+	return res;
+}
+
+bool UARVIIntegrationSubSystem::TryGetUISettingsData(const FString& Name, FString& Value)
+{
+	Value.Empty();
+	int size = 0;
+	bool res = !!::TryGetUISettingsData(TCHAR_TO_WCHAR(*Name), nullptr, &size);
+	if (!res && (size == 0))
+		return false;
+	TArray<wchar_t> Buff;
+	Buff.SetNum(size);
+	size = Buff.Num();
+	res = !!::TryGetUISettingsData(TCHAR_TO_WCHAR(*Name), Buff.GetData(), &size);
+	if (res) {
+		Buff.SetNum(size);
+		FWCharToTCHAR Converter(Buff.GetData(), Buff.Num());
+		Value = FString(Converter.Length(), Converter.Get());
+	}
 	return res;
 }
 

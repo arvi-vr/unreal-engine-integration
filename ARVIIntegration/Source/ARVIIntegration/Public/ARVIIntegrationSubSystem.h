@@ -1,8 +1,9 @@
-// Copyright © 2018-2022 ARVI VR Inc.
+// Copyright Â© 2018-2022 ARVI VR Inc.
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/EngineTypes.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "AudioChatTypes.h"
 #include "PlayerDominantHandTypes.h"
@@ -12,7 +13,6 @@
 DECLARE_DELEGATE(FOnARVIIntegrationRequestCompleted);
 DECLARE_DELEGATE_TwoParams(FOnARVIIntegrationRequestFailed, int, FString);
 DECLARE_DELEGATE_OneParam(FOnARVIIntegrationRequestCompletedWithData, const TArray<uint8>& );
-DECLARE_DYNAMIC_DELEGATE(FTEST_T);
 
 [[deprecated("Use FOnARVIIntegrationRequestFailed instead.")]]
 typedef FOnARVIIntegrationRequestFailed FOnARVIIntegrationRequesFailed;
@@ -132,6 +132,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetSessionTime, Category = "ARVI Integration")
 	int SessionTime;
 
+	/**
+	* Unique game session identifier. 
+	* Can be useful for separating sessions if there are several sessions of your game running on the network and you are looking for players on the network yourself
+	*/
 	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetSessionID, Category = "ARVI Integration")
 	FString SessionID;
 
@@ -354,6 +358,14 @@ public:
 	* @return						True if the asynchronous operation has started and one of the handlers will be called later
 	*/
 	bool TryGetSessionData(const FString& Name, TArray<uint8>& Data);
+
+	/**
+	* Gets UI settings data by name
+	* @param Name					Data name
+	* @param Data					Returned binary data
+	* @return						True if the asynchronous operation has started and one of the handlers will be called later
+	*/
+	bool TryGetUISettingsData(const FString& Name, FString& Value);
 
 	/**
 	* Gets the number of players in the session

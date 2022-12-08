@@ -1,4 +1,4 @@
-// Copyright © 2018-2022 ARVI VR Inc.
+// Copyright Â© 2018-2022 ARVI VR Inc.
 
 
 #include "ARVIIntegrationRequest.h"
