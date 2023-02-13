@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.4.1",
+	"VersionName": "1.4.2",
 	"FriendlyName": "ARVIIntegration",
 	"Description": "Plugin for integration with ARVI SDK",
 	"Category": "Other",

@@ -361,7 +361,7 @@ void UARVIIntegrationSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 			UE_LOG(LogARVIIntegration, Warning, TEXT("Can not load session language"));
 		}
 
-		if (!::TryGetPlayersCount(&SessionTime)) {
+		if (!::TryGetSessionTime(&SessionTime)) {
 			UE_LOG(LogARVIIntegration, Warning, TEXT("Can not load session time"));
 		}
 
