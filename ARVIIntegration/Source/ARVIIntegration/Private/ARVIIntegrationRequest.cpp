@@ -293,3 +293,33 @@ UARVIIntegrationRequest* UARVIIntegrationRequest_SetPlayerDominantHand::SetPlaye
 	}
 	return Request;
 }
+
+bool UARVIIntegrationRequest_ActivateInGameCommands::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
+{
+	return Integration->ActivateInGameCommands(Messages, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
+}
+
+UARVIIntegrationRequest* UARVIIntegrationRequest_ActivateInGameCommands::ActivateInGameCommands(UObject* WorldContextObject, const TArray<FString>& ActivationMessages)
+{
+	ThisClass* Request = NewObject<ThisClass>();
+	if (Request) {
+		Request->WorldContext = WorldContextObject;
+		Request->Messages = ActivationMessages;
+	}
+	return Request;
+}
+
+bool UARVIIntegrationRequest_DeactivateInGameCommands::ExecuteInternal(UARVIIntegrationSubSystem* Integration)
+{
+	return Integration->DeactivateInGameCommands(Messages, FOnARVIIntegrationRequestCompleted::CreateUObject(this, &ThisClass::HandleCompleted), FOnARVIIntegrationRequestFailed::CreateUObject(this, &ThisClass::HandleFailed));
+}
+
+UARVIIntegrationRequest* UARVIIntegrationRequest_DeactivateInGameCommands::DeactivateInGameCommands(UObject* WorldContextObject, const TArray<FString>& DeactivationMessages)
+{
+	ThisClass* Request = NewObject<ThisClass>();
+	if (Request) {
+		Request->WorldContext = WorldContextObject;
+		Request->Messages = DeactivationMessages;
+	}
+	return Request;
+}

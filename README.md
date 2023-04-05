@@ -1,7 +1,7 @@
 # Integration SDK for Unreal Engine
 Use this plugin for integrating you game with ARVI VR platform. All documentation and code examples can be found in [Integration Guide](https://arvi-vr.github.io/integration-guide/tabs/integrations-unreal/)
 
-This Integration SDK requires **Unreal Engine 4.22** or newer.
+This Integration SDK requires **Unreal Engine 4.27** or newer.
 
 ## How to add this plugin to your UE4 Project
 

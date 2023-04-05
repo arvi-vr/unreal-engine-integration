@@ -237,6 +237,25 @@ public:
 };
 
 UCLASS()
+class ARVIINTEGRATION_API UARVIIntegrationRequest_ActivateInGameCommands : public UARVIIntegrationRequest
+{
+	GENERATED_BODY()
+protected:
+	TArray<FString> Messages;
+
+	virtual bool ExecuteInternal(class UARVIIntegrationSubSystem* Integration) override;
+public:
+	/**
+	* Activates multiple in-game commands at once. If several commands have the same activation message, then they will all be activated
+	* @note	Limitations: no more than 10 time per second and 100 times per minute. Message length should not exceed 2048
+	* @param ActivationMessage		Activation message
+	* @return
+	*/
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject", DisplayName = "ActivateInGameCommands"), Category = "ARVI Integration")
+	static UARVIIntegrationRequest* ActivateInGameCommands(UObject* WorldContextObject, const TArray<FString>& ActivationMessages);
+};
+
+UCLASS()
 class ARVIINTEGRATION_API UARVIIntegrationRequest_DeactivateInGameCommand : public UARVIIntegrationRequest
 {
 	GENERATED_BODY()
@@ -253,6 +272,25 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject", DisplayName = "DeactivateInGameCommand"), Category = "ARVI Integration")
 	static UARVIIntegrationRequest* DeactivateInGameCommand(UObject* WorldContextObject, const FString& DeactivationMessage);
+};
+
+UCLASS()
+class ARVIINTEGRATION_API UARVIIntegrationRequest_DeactivateInGameCommands : public UARVIIntegrationRequest
+{
+	GENERATED_BODY()
+protected:
+	TArray<FString> Messages;
+
+	virtual bool ExecuteInternal(class UARVIIntegrationSubSystem* Integration) override;
+public:
+	/**
+	* Deactivates multiple in-game commands at once. If several commands have the same deactivation message, then they will all be deactivated
+	* @note	Limitations: no more than 10 time per second and 100 times per minute. Message length should not exceed 2048
+	* @param DeactivationMessage		Deactivation message
+	* @return
+	*/
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject", DisplayName = "DeactivateInGameCommands"), Category = "ARVI Integration")
+	static UARVIIntegrationRequest* DeactivateInGameCommands(UObject* WorldContextObject, const TArray<FString>& DeactivationMessages);
 };
 
 UCLASS()

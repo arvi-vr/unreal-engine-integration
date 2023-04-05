@@ -1,4 +1,4 @@
-// Copyright © 2018-2022 ARVI VR Inc.
+// Copyright © 2018-2023 ARVI VR Inc.
 #pragma once
 
 #include "PublicTypes.h"
@@ -143,6 +143,15 @@ extern "C" {
 	REQUEST_ID LIBARVI_PUBLIC ActivateInGameCommand(const wchar_t* ActivationMessage);
 
 	/**
+	* Activates in-game commands. If several commands have the same activation message, then they will all be activated
+	* @param ActivationMessage	Activation messages
+	* @param Count				Deactivation messages count
+	* @return					Associated Request ID
+	* @note						Limitations: no more than 10 times per second and 100 times per minute. Message length should not exceed 2048
+	*/
+	REQUEST_ID LIBARVI_PUBLIC ActivateInGameCommands(const wchar_t** ActivationMessages, int Count);
+
+	/**
 	* Deactivates in-game command. If several commands have the same deactivation message, then they will all be deactivated
 	* @param DeactivationMessage	Deactivation message
 	* @return						Associated Request ID
@@ -150,6 +159,14 @@ extern "C" {
 	*/
 	REQUEST_ID LIBARVI_PUBLIC DeactivateInGameCommand(const wchar_t* DeactivationMessage);
 
+	/**
+	* Deactivates in-game commands. If several commands have the same deactivation message, then they will all be deactivated
+	* @param DeactivationMessages	Deactivation messages
+	* @param Count					Deactivation messages count
+	* @return						Associated Request ID
+	* @note							Limitations: no more than 10 times per second and 100 times per minute. Message length should not exceed 2048
+	*/
+	REQUEST_ID LIBARVI_PUBLIC DeactivateInGameCommands(const wchar_t** DeactivationMessage, int Count);
 
 	/**
 	* Sets session-related data by name

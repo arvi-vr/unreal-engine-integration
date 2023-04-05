@@ -8,6 +8,7 @@
 #include "AudioChatTypes.h"
 #include "PlayerDominantHandTypes.h"
 #include "ARVIPlatformMessage.h"
+#include "MemoryArchivingAssistant.h"
 #include "ARVIIntegrationSubSystem.generated.h"
 
 DECLARE_DELEGATE(FOnARVIIntegrationRequestCompleted);
@@ -331,6 +332,16 @@ public:
 	bool ActivateInGameCommand(const FString& ActivationMessage, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
+	* Activates multiple in-game commands at once. If several commands have the same activation message, then they will all be activated
+	* @param ActivationMessages		Activation messages
+	* @param OnCompleted			The handler that is called when an asynchronous operation completes successfully.
+	* @param OnFailed				The handler that is called when an asynchronous operation fails
+	* @return						True if the asynchronous operation has started and one of the handlers will be called later
+	* @note							Limitations: no more than 10 time per second and 100 times per minute. Message length should not exceed 2048
+	*/
+	bool ActivateInGameCommands(const TArray<FString>& ActivationMessages, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
+
+	/**
 	* Deactivates in-game command. If several commands have the same deactivation message, then they will all be deactivated
 	* @param DeactivationMessage	Deactivation message
 	* @param OnCompleted			The handler that is called when an asynchronous operation completes successfully.
@@ -341,7 +352,17 @@ public:
 	bool DeactivateInGameCommand(const FString& DeactivationMessage, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
-	* Sets session-related data by name
+	* Deactivates multiple in-game commands at once. If several commands have the same deactivation message, then they will all be deactivated
+	* @param DeactivationMessage	Deactivation message
+	* @param OnCompleted			The handler that is called when an asynchronous operation completes successfully.
+	* @param OnFailed				The handler that is called when an asynchronous operation fails
+	* @return						True if the asynchronous operation has started and one of the handlers will be called later
+	* @note							Limitations: no more than 10 time per second and 100 times per minute. Message length should not exceed 2048
+	*/
+	bool DeactivateInGameCommands(const TArray<FString>& DeactivationMessages, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
+
+	/**
+	* Sets session-related raw data by name
 	* @param Name					Data name
 	* @param Data					Binary data to save
 	* @param OnCompleted			The handler that is called when an asynchronous operation completes successfully.
@@ -352,18 +373,56 @@ public:
 	bool SetSessionData(const FString& Name, const TArray<uint8>& Data, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr);
 
 	/**
-	* Gets session-related data by name
+	* Sets session-related serialized data by name
+	* @param Name					Data name
+	* @param Value					Value to serialize
+	* @param OnCompleted			The handler that is called when an asynchronous operation completes successfully.
+	* @param OnFailed				The handler that is called when an asynchronous operation fails
+	* @return						True if the asynchronous operation has started and one of the handlers will be called later
+	* @note							Limitations: Data size should not exceed 10Mb
+	*/
+	template<typename T>
+	bool SetSessionData(const FString& Name, T Value, FOnARVIIntegrationRequestCompleted OnCompleted = nullptr, FOnARVIIntegrationRequestFailed OnFailed = nullptr) {
+		TArray<uint8> Buff;
+		FMemoryWritingAssistant Writer(Buff);
+
+		Writer << Value;
+
+		if (Writer.IsError())
+			return false;
+
+		return SetSessionData(Name, Buff, OnCompleted, OnFailed);
+	}
+
+	/**
+	* Gets session-related raw data by name
 	* @param Name					Data name
 	* @param Data					Returned binary data
-	* @return						True if the asynchronous operation has started and one of the handlers will be called later
+	* @return						True if the data by name was found
 	*/
 	bool TryGetSessionData(const FString& Name, TArray<uint8>& Data);
+
+	/**
+	* Gets session-related serialized data by name
+	* @param Name					Data name
+	* @param Value					Serialized value
+	* @return						True if the data by name could be found and loaded
+	*/
+	template<typename T>
+	bool TryGetSessionData(const FString& Name, T& Value) {
+		TArray<uint8> Buff;
+		if (!TryGetSessionData(Name, Buff))
+			return false;
+		FMemoryReadingAssistant Reader(Buff);
+		Reader << Value;
+		return !Reader.IsError();
+	}
 
 	/**
 	* Gets UI settings data by name
 	* @param Name					Data name
 	* @param Data					Returned binary data
-	* @return						True if the asynchronous operation has started and one of the handlers will be called later
+	* @return						True if the data by name was found
 	*/
 	bool TryGetUISettingsData(const FString& Name, FString& Value);
 

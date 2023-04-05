@@ -6,6 +6,7 @@
 #include "ARVIIntegrationLibrary.h"
 #include "PublicMethods.h"
 
+#include "Containers/StringConv.h"
 #include "Misc/CommandLine.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonSerializer.h"
@@ -538,6 +539,21 @@ bool UARVIIntegrationSubSystem::ActivateInGameCommand(const FString& ActivationM
 	return true;
 }
 
+bool UARVIIntegrationSubSystem::ActivateInGameCommands(const TArray<FString>& ActivationMessages, FOnARVIIntegrationRequestCompleted OnCompleted, FOnARVIIntegrationRequestFailed OnFailed)
+{
+	TArray<FTCHARToWChar> Convertes;
+	TArray<const wchar_t*> Messages;
+	for (const auto& ActivationMessage : ActivationMessages) {
+		int32 index = Convertes.Add(FTCHARToWChar(*ActivationMessage));
+		Messages.Add(Convertes[index].Get());
+	}
+	REQUEST_ID ID = ::ActivateInGameCommands(Messages.GetData(), Messages.Num());
+	if (ID == INVALID_ID)
+		return false;
+	Requests.Add((int64)ID, FRequestCallback(OnCompleted, OnFailed));
+	return false;
+}
+
 bool UARVIIntegrationSubSystem::DeactivateInGameCommand(const FString& DeactivationMessage, FOnARVIIntegrationRequestCompleted OnCompleted, FOnARVIIntegrationRequestFailed OnFailed)
 {
 	REQUEST_ID ID = ::DeactivateInGameCommand(TCHAR_TO_WCHAR(*DeactivationMessage));
@@ -545,6 +561,21 @@ bool UARVIIntegrationSubSystem::DeactivateInGameCommand(const FString& Deactivat
 		return false;
 	Requests.Add((int64)ID, FRequestCallback(OnCompleted, OnFailed));
 	return true;
+}
+
+bool UARVIIntegrationSubSystem::DeactivateInGameCommands(const TArray<FString>& DeactivationMessages, FOnARVIIntegrationRequestCompleted OnCompleted, FOnARVIIntegrationRequestFailed OnFailed)
+{
+	TArray<FTCHARToWChar> Convertes;
+	TArray<const wchar_t*> Messages;
+	for (const auto& DeactivationMessage : DeactivationMessages) {
+		int32 index = Convertes.Add(FTCHARToWChar(*DeactivationMessage));
+		Messages.Add(Convertes[index].Get());
+	}
+	REQUEST_ID ID = ::DeactivateInGameCommands(Messages.GetData(), Messages.Num());
+	if (ID == INVALID_ID)
+		return false;
+	Requests.Add((int64)ID, FRequestCallback(OnCompleted, OnFailed));
+	return false;
 }
 
 bool UARVIIntegrationSubSystem::SetSessionData(const FString& Name, const TArray<uint8>& Data, FOnARVIIntegrationRequestCompleted OnCompleted, FOnARVIIntegrationRequestFailed OnFailed)

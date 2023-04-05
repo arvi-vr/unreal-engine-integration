@@ -91,11 +91,27 @@ public:
 };
 
 UCLASS()
+class ARVIINTEGRATIONEDITOR_API UK2Node_ActivateInGameCommands : public UK2Node_BaseAsyncTask
+{
+	GENERATED_BODY()
+public:
+	UK2Node_ActivateInGameCommands(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+};
+
+UCLASS()
 class ARVIINTEGRATIONEDITOR_API UK2Node_DeactivateInGameCommand : public UK2Node_BaseAsyncTask
 {
 	GENERATED_BODY()
 public:
 	UK2Node_DeactivateInGameCommand(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+};
+
+UCLASS()
+class ARVIINTEGRATIONEDITOR_API UK2Node_DeactivateInGameCommands : public UK2Node_BaseAsyncTask
+{
+	GENERATED_BODY()
+public:
+	UK2Node_DeactivateInGameCommands(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 };
 
 UCLASS()

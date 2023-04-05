@@ -41,18 +41,18 @@ public class ARVIIntegration : ModuleRules
 			PublicAdditionalLibraries.Add("winhttp.lib");
 #endif
 		}
-                PublicIncludePaths.AddRange(
+		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
 			}
-			);
+		);
 				
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
 				// ... add other private include paths required here ...
 			}
-			);
+		);
 			
 		
 		PublicDependencyModuleNames.AddRange(
@@ -61,7 +61,7 @@ public class ARVIIntegration : ModuleRules
 				"Core",
 				// ... add other public dependencies that you statically link with here ...
 			}
-			);
+		);
 			
 		
 		PrivateDependencyModuleNames.AddRange(
@@ -73,7 +73,7 @@ public class ARVIIntegration : ModuleRules
 				"JsonUtilities",
 				// ... add private dependencies that you statically link with here ...	
 			}
-			);
+		);
 		
 		
 		DynamicallyLoadedModuleNames.AddRange(
@@ -81,6 +81,6 @@ public class ARVIIntegration : ModuleRules
 			{
 				// ... add any modules that your module loads dynamically here ...
 			}
-			);
+		);
 	}
 }
