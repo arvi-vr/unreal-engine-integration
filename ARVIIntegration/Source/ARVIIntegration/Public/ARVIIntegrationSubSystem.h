@@ -76,13 +76,13 @@ public:
 	/**
 	* Player name change handler
 	*/
-	UPROPERTY(BlueprintReadWrite, Category = "ARVI Integration")
+	UPROPERTY(BlueprintReadWrite, BlueprintAssignable, Category = "ARVI Integration")
 	FPlayerNameChangeNotificationDelegate PlayerNameChangedHandler;
 
 	/**
 	* Player dominant hand change handler
 	*/
-	UPROPERTY(BlueprintReadWrite, Category = "ARVI Integration")
+	UPROPERTY(BlueprintReadWrite, BlueprintAssignable, Category = "ARVI Integration")
 	FPlayerDominantHandChangeNotificationDelegate PlayerDominantHandChangedHandler;
 protected:
 	/**
