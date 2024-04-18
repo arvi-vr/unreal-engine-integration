@@ -13,5 +13,5 @@ This Integration SDK requires **Unreal Engine 4.27** or newer.
 3. Unzip the downloaded file directly to the **Plugins** folder. There should now be a folder called unreal-integration-master; you can rename this if you'd like.
 4. Finally, double-click the *.uproject file at the root of your project to compile and open the project. If you are prompted to rebuild any files select yes.
 
-## Have aye questions?
+## Have any questions?
 If you still have any questions contact our [Support](mailto:vr.support@arvilab.com)
