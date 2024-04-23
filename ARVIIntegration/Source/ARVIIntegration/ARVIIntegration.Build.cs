@@ -23,9 +23,11 @@ public class ARVIIntegration : ModuleRules
 					LibDir = Path.Combine(LibDir, "VS2017");
 					break;
 #endif
+#if !UE_5_4_OR_LATER
 				case WindowsCompiler.VisualStudio2019:
 					LibDir = Path.Combine(LibDir, "VS2019");
 					break;
+#endif
 				case WindowsCompiler.VisualStudio2022:
 					LibDir = Path.Combine(LibDir, "VS2022");
 					break;

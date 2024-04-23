@@ -1,10 +1,11 @@
-// Copyright © 2018-2022 ARVI VR Inc.
+// Copyright © ARVI VR Inc.
 
 
 #include "ARVIIntegrationRequest.h"
 #include "ARVIIntegrationSubSystem.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
+#include "Engine/GameInstance.h"
 #include "ARVIIntegrationLog.h"
 
 void UARVIIntegrationRequest::HandleCompleted()

@@ -1,4 +1,4 @@
-// Copyright © 2018-2022 ARVI VR Inc.
+// Copyright © ARVI VR Inc.
 
 #pragma once
 
@@ -7,6 +7,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "AudioChatTypes.h"
 #include "PlayerDominantHandTypes.h"
+#include "PlayAreaTypes.h"
 #include "ARVIPlatformMessage.h"
 #include "MemoryArchivingAssistant.h"
 #include "ARVIIntegrationSubSystem.generated.h"
@@ -149,14 +150,26 @@ protected:
 	/**
 	* Player's name
 	*/
-	UPROPERTY(BlueprintReadWrite, BlueprintGetter = GetPlayerName, Category = "ARVI Integration")
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = GetPlayerName, Category = "ARVI Integration")
 	FString PlayerName;
 
 	/**
 	* Player's dominant hand
 	*/
-	UPROPERTY(BlueprintReadWrite, BlueprintGetter=GetPlayerDominantHand, Category = "ARVI Integration")
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter=GetPlayerDominantHand, Category = "ARVI Integration")
 	EPlayerDominantHand PlayerDominantHand;
+
+	/**
+	* Play area checking mode
+	*/
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = GetPlayAreaCheckingMode, Category = "ARVI Integration")
+	EPlayAreaCheckingMode PlayAreaCheckingMode;
+
+	/**
+	* Mode indicating what should happen when the player moves out of play area bounds
+	*/
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = GetPlayAreaOutOfBoundsMode, Category = "ARVI Integration")
+	EPlayAreaOutOfBoundsMode PlayAreaOutOfBoundsMode;
 
 	UPROPERTY()
 	TMap<int64, FRequestCallback> Requests;
@@ -496,6 +509,24 @@ public:
 	UFUNCTION(BlueprintGetter)
 	EPlayerDominantHand GetPlayerDominantHand() const {
 		return PlayerDominantHand;
+	}
+
+	/**
+	* Gets the play area checking mode
+	* @return Mode value
+	*/
+	UFUNCTION(BlueprintGetter)
+	EPlayAreaCheckingMode GetPlayAreaCheckingMode() const {
+		return PlayAreaCheckingMode;
+	}
+
+	/**
+	* Gets the mode indicating what should happen when the player moves out of play area bounds
+	* @return Mode indicating what should happen when the player moves out of play area bounds
+	*/
+	UFUNCTION(BlueprintGetter)
+	EPlayAreaOutOfBoundsMode GetPlayAreaOutOfBoundsMode() const {
+		return PlayAreaOutOfBoundsMode;
 	}
 
 	/**

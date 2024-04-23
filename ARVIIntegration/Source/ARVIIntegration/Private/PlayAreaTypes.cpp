@@ -1,5 +1,3 @@
 // Copyright © ARVI VR Inc.
 
-
-#include "AudioChatTypes.h"
-
+#include "PlayAreaTypes.h"

@@ -1,4 +1,4 @@
-// Copyright © 2018-2022 ARVI VR Inc.
+// Copyright © ARVI VR Inc.
 
 
 #include "ARVIIntegrationSubSystem.h"
@@ -9,7 +9,36 @@
 #include "Containers/StringConv.h"
 #include "Misc/CommandLine.h"
 #include "Dom/JsonObject.h"
+#include "Engine/GameInstance.h"
+#include "TimerManager.h"
 #include "Serialization/JsonSerializer.h"
+
+static EPlayAreaCheckingMode Convert(PLAY_AREA_CHECKING_MODE Value) {
+	switch (Value)
+	{
+	case PLAY_AREA_CHECKING_MODE::PLAY_AREA_CHECKING_MODE_AUTO:
+		return EPlayAreaCheckingMode::PACM_Auto;
+	case PLAY_AREA_CHECKING_MODE::PLAY_AREA_CHECKING_MODE_DISABLE:
+		return EPlayAreaCheckingMode::PACM_Disable;
+	case PLAY_AREA_CHECKING_MODE::PLAY_AREA_CHECKING_MODE_ENABLE:
+		return EPlayAreaCheckingMode::PACM_Enable;
+	default:
+		return EPlayAreaCheckingMode::PACM_Auto;
+	}
+}
+
+static EPlayAreaOutOfBoundsMode Convert(PLAY_AREA_OUT_OF_BOUNDS_MODE Value) {
+	switch (Value) {
+	case PLAY_AREA_OUT_OF_BOUNDS_MODE::PLAY_AREA_OUT_OF_BOUNDS_MODE_AUTO:
+		return EPlayAreaOutOfBoundsMode::PAOOBM_Auto;
+	case PLAY_AREA_OUT_OF_BOUNDS_MODE::PLAY_AREA_OUT_OF_BOUNDS_MODE_BLOCK:
+		return EPlayAreaOutOfBoundsMode::PAOOBM_Block;
+	case PLAY_AREA_OUT_OF_BOUNDS_MODE::PLAY_AREA_OUT_OF_BOUNDS_MODE_IGNORE:
+		return EPlayAreaOutOfBoundsMode::PAOOBM_Ignore;
+	default:
+		return EPlayAreaOutOfBoundsMode::PAOOBM_Auto;
+	}
+}
 
 static TEAM_ID ConvertChatChannel(EAudioChatChannel ChatChannel) {
 	switch (ChatChannel) {
@@ -372,6 +401,32 @@ void UARVIIntegrationSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 		if (!TryGetStringData(&::TryGetPlayerID, PlayerID)) {
 			UE_LOG(LogARVIIntegration, Warning, TEXT("Can not load player's id"));
+		}
+
+		{
+			PLAY_AREA_CHECKING_MODE RawModeValue;
+			if (TryGetPlayAreaCheckingMode(&RawModeValue)) {
+				PlayAreaCheckingMode = Convert(RawModeValue);
+				if ((PlayAreaCheckingMode == EPlayAreaCheckingMode::PACM_Auto) && (RawModeValue != PLAY_AREA_CHECKING_MODE::PLAY_AREA_CHECKING_MODE_AUTO)) {
+					UE_LOG(LogARVIIntegration, Warning, TEXT("Can not load play area checking mode, bad value %d"), (int)RawModeValue);
+				}
+			}
+			else {
+				UE_LOG(LogARVIIntegration, Warning, TEXT("Can not load play area checking mode"));
+			}
+		}
+
+		{
+			PLAY_AREA_OUT_OF_BOUNDS_MODE RawModeValue;
+			if (TryGetPlayAreaOutOfBoundsMode(&RawModeValue)) {
+				PlayAreaOutOfBoundsMode = Convert(RawModeValue);
+				if ((PlayAreaOutOfBoundsMode == EPlayAreaOutOfBoundsMode::PAOOBM_Auto) && (RawModeValue != PLAY_AREA_OUT_OF_BOUNDS_MODE::PLAY_AREA_OUT_OF_BOUNDS_MODE_AUTO)) {
+					UE_LOG(LogARVIIntegration, Warning, TEXT("Can not load play area out of bounds mode, bad value %d"), (int)RawModeValue);
+				}
+			}
+			else {
+				UE_LOG(LogARVIIntegration, Warning, TEXT("Can not load play area out of bounds mode"));
+			}
 		}
 
 		UpdateCachePlayerName();

@@ -1,4 +1,4 @@
-// Copyright © 2018-2023 ARVI VR Inc.
+// Copyright © ARVI VR Inc.
 #pragma once
 
 #include "PublicTypes.h"
@@ -266,6 +266,20 @@ extern "C" {
 	* @return						Non-zero value if the success
 	*/
 	LIBARVI_PUBLIC int TryGetPlayerDominantHand(DOMINANT_HAND* Value);
+
+	/**
+	* Gets the play area checking mode
+	* @param Value					Mode value
+	* @return						Non-zero value if the success
+	*/                 
+	LIBARVI_PUBLIC int TryGetPlayAreaCheckingMode(PLAY_AREA_CHECKING_MODE* Value);
+
+	/**
+	* Gets the mode indicating what should happen when the player moves out of play area bounds
+	* @param Value					Mode value
+	* @return						Non-zero value if the success
+	*/
+	LIBARVI_PUBLIC int TryGetPlayAreaOutOfBoundsMode(PLAY_AREA_OUT_OF_BOUNDS_MODE* Value);
 
 	/**
 	* Sets the new player name
